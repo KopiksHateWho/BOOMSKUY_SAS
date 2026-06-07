@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bomskuy</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <button id="btn-mute" class="btn-mute">🔊</button>
+    <div class="game-container">
+        <!-- Welcome Screen Overlay -->
+        <div id="welcome-screen" class="welcome-screen">
+            <img src="./Assets/Bomskuy.png" alt="Bomskuy Logo" class="logo-placeholder">
+            <input type="text" id="input-name" class="input-name" placeholder="Masukkan Nama Anda" autocomplete="off">
+            <select id="select-level" class="select-level">
+                <option value="1">Level 1 (Easy)</option>
+                <option value="2">Level 2 (Normal)</option>
+                <option value="3">Level 3 (Hard)</option>
+            </select>
+            <button id="btn-start" class="btn-start">Mulai Bermain</button>
+            
+            <div class="leaderboard">
+                <h2>Top 5 Skor Tertinggi</h2>
+                <ol id="leaderboard-list">
+                    <!-- List skor akan dimuat dari JavaScript -->
+                </ol>
+            </div>
+        </div>
+
+        <!-- Win Screen Overlay -->
+        <div id="win-screen" class="end-screen" style="display:none;">
+            <div class="end-screen-content">
+                <div class="end-icon">⏳</div>
+                <h2 class="end-title win-title">Waktu Habis!</h2>
+                <p class="end-subtitle">Total Skor:</p>
+                <p id="win-time-display" class="end-time">0</p>
+                <div class="end-buttons">
+                    <button id="btn-play-again" class="btn-end btn-win">Main Lagi</button>
+                    <button id="btn-menu-win" class="btn-end btn-menu">Kembali ke Menu Utama</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lose Screen Overlay -->
+        <div id="lose-screen" class="end-screen" style="display:none;">
+            <div class="end-screen-content">
+                <div class="end-icon">💀</div>
+                <h2 class="end-title lose-title">Game Over! Nyawa Habis</h2>
+                <p class="end-subtitle">Total Skor:</p>
+                <p id="lose-score-display" class="end-time">0</p>
+                <div class="end-buttons">
+                    <button id="btn-try-again" class="btn-end btn-lose">Coba Lagi</button>
+                    <button id="btn-menu-lose" class="btn-end btn-menu">Kembali ke Menu Utama</button>
+                </div>
+            </div>
+        </div>
+
+        <h1>Bomskuy</h1>
+        <div id="status-display" class="status-display">
+            Level: <span id="level-display">-</span> | 
+            Pemain: <span id="player-name-display">-</span> | 
+            Nyawa: <span id="health-display">3 ♥</span> | 
+            Waktu: <span id="time-display">01:00</span> | 
+            Skor: <span id="score-display">0</span>
+        </div>
+        <div id="game-board" class="game-board"></div>
+        
+        <!-- Mobile Virtual Controls -->
+        <div class="mobile-controls">
+            <div class="d-pad">
+                <button id="btn-up" class="d-btn up">▲</button>
+                <button id="btn-left" class="d-btn left">◀</button>
+                <button id="btn-right" class="d-btn right">▶</button>
+                <button id="btn-down" class="d-btn down">▼</button>
+            </div>
+            <div class="action-pad">
+                <button id="btn-bomb" class="action-btn">BOMB</button>
+            </div>
+        </div>
+
+        <p class="instructions">Gunakan <strong>Arrow Keys / WASD</strong> untuk bergerak.<br>Tekan <strong>Spasi</strong> untuk meletakkan Bom.<br>Kumpulkan skor sebanyak-banyaknya dari bata dan musuh sebelum waktu habis!</p>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

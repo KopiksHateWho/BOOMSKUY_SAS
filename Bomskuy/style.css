@@ -1,0 +1,685 @@
+/* === IMPORTS === */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap');
+
+/* =============================================
+   RESET & BASE
+   ============================================= */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #121212;
+    color: #EAEAEA;
+    font-family: 'Outfit', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* =============================================
+   GAME CONTAINER
+   ============================================= */
+.game-container {
+    text-align: center;
+    background-color: #1A1A1A;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    border: 4px solid #556B2F;
+    position: relative;
+    overflow: hidden;
+}
+
+/* =============================================
+   TYPOGRAPHY
+   ============================================= */
+h1 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    color: #228B22;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 1.6rem;
+    font-weight: 800;
+    text-shadow: 2px 2px 0 #000;
+}
+
+/* =============================================
+   GAME BOARD — DO NOT MODIFY CELL SIZES
+   ============================================= */
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(15, 1fr);
+    grid-template-rows: repeat(9, 1fr);
+    gap: 1px;
+    background-color: #111111;
+    border: 5px solid #556B2F;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 900px;
+    justify-content: center;
+}
+
+/* Each grid cell */
+.cell {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* =============================================
+   TILE TYPES
+   ============================================= */
+.floor {
+    background-color: #1A1A1A;
+}
+
+.wall-permanent {
+    background-image: url('./Assets/WALL.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.wall-brick {
+    background-image: url('./Assets/OBSTACLE.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* =============================================
+   LAYERING SYSTEM (z-index hierarchy)
+   z-index 1 → Bomb & Stars
+   z-index 2 → Explosion
+   z-index 3 → Enemy
+   z-index 4 → Player
+   ============================================= */
+
+.player {
+    background-image: url('./Assets/PLAYER.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 80%;
+    z-index: 4;
+    box-sizing: border-box;
+}
+
+.player.invulnerable {
+    animation: blink 0.2s infinite;
+}
+
+@keyframes blink {
+    0%   { opacity: 1; }
+    50%  { opacity: 0.15; }
+    100% { opacity: 1; }
+}
+
+.bomb {
+    background-image: url('./Assets/BOM.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 12%;
+    left: 12%;
+    width: 76%;
+    height: 76%;
+    z-index: 1;
+    box-sizing: border-box;
+    animation: bomb-pulse 0.5s infinite alternate;
+}
+
+@keyframes bomb-pulse {
+    from { transform: scale(0.85); }
+    to   { transform: scale(1);    }
+}
+
+.explosion {
+    background-color: #ff4500;
+    box-shadow: inset 0 0 15px #ffff00;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    box-sizing: border-box;
+    animation: explode-flash 0.5s ease-out forwards;
+}
+
+@keyframes explode-flash {
+    0%   { transform: scale(0.1); opacity: 1; background-color: #fff; }
+    50%  { transform: scale(1.1); background-color: #ff8c00; }
+    100% { transform: scale(1);   opacity: 0; }
+}
+
+.enemy {
+    background-image: url('./Assets/VILLAIN.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 80%;
+    z-index: 3;
+    box-sizing: border-box;
+}
+
+.star {
+    background-image: url('./Assets/STARK.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 15%;
+    left: 15%;
+    width: 70%;
+    height: 70%;
+    z-index: 1;
+    box-sizing: border-box;
+    animation: star-glow 1s infinite alternate;
+}
+
+@keyframes star-glow {
+    from { transform: scale(0.9); }
+    to   { transform: scale(1.1); }
+}
+
+.star-special {
+    background-image: url('./Assets/STARO.png');
+    animation: star-glow-special 0.5s infinite alternate;
+}
+
+@keyframes star-glow-special {
+    from { transform: scale(0.9) rotate(0deg); }
+    to   { transform: scale(1.2) rotate(15deg); }
+}
+
+/* =============================================
+   MUTE BUTTON (fixed, top-right)
+   ============================================= */
+.btn-mute {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 9999;
+    background-color: #556B2F;
+    color: #F5F5F5;
+    border: 2px solid #8FBC8F;
+    border-radius: 50%;
+    width: 46px;
+    height: 46px;
+    font-size: 1.15rem;
+    cursor: pointer;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.2s, transform 0.15s;
+    outline: none;
+    padding: 0;
+}
+
+.btn-mute:hover {
+    background-color: #6B8E23;
+    transform: scale(1.08);
+}
+
+.btn-mute:active {
+    transform: scale(0.93);
+}
+
+/* =============================================
+   WELCOME SCREEN OVERLAY
+   ============================================= */
+.welcome-screen {
+    position: fixed;
+    inset: 0;                        /* top/right/bottom/left: 0 — true full viewport */
+    background-color: rgba(10, 12, 8, 0.92);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;         /* TRUE vertical centering */
+    align-items: center;
+    gap: 16px;                       /* Consistent vertical spacing between all children */
+    padding: 24px 16px;
+    z-index: 100;
+    backdrop-filter: blur(6px);
+    overflow-y: auto;
+}
+
+.welcome-screen.hidden {
+    display: none;
+}
+
+/* Inner card that wraps all welcome content */
+.welcome-screen > * {
+    flex-shrink: 0;                  /* Prevent children squishing */
+}
+
+/* Logo */
+.logo-placeholder {
+    width: 100%;
+    max-width: 320px;
+    max-height: 160px;               /* Cap height so it doesn't dominate */
+    height: auto;
+    object-fit: contain;
+    margin-bottom: 4px;
+}
+
+/* =============================================
+   FORM ELEMENTS (Input & Select)
+   Shared base style via common properties
+   ============================================= */
+.input-name,
+.select-level {
+    padding: 11px 18px;
+    font-size: 1.05rem;
+    font-family: 'Outfit', 'Segoe UI', sans-serif;
+    font-weight: 600;
+    border: 2px solid #556B2F;
+    border-radius: 8px;
+    background-color: #1E201A;
+    color: #EAEAEA;
+    text-align: center;
+    width: min(300px, 88vw);         /* Responsive width without overflow */
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.25s, background-color 0.25s;
+    /* Remove individual margin-bottom; parent gap handles spacing */
+}
+
+.input-name {
+    cursor: text;
+    text-align: center;
+}
+
+.select-level {
+    text-align-last: center;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238FBC8F' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+}
+
+.input-name:focus,
+.select-level:focus {
+    border-color: #6B8E23;
+    background-color: #222618;
+    color: #F5F5F5;
+}
+
+/* START button */
+.btn-start {
+    padding: 13px 40px;
+    font-size: 1.2rem;
+    font-family: 'Outfit', 'Segoe UI', sans-serif;
+    font-weight: 700;
+    color: #F5F5F5;
+    background: #2E7D32;             /* Slightly deeper green for contrast */
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+    transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    width: min(300px, 88vw);
+}
+
+.btn-start:hover {
+    background: #3A9E40;             /* Slightly lighter — no glow */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+}
+
+.btn-start:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* =============================================
+   LEADERBOARD
+   ============================================= */
+.leaderboard {
+    background-color: #161a12;
+    padding: 16px 24px;
+    border-radius: 10px;
+    border: 2px solid #556B2F;
+    width: min(320px, 88vw);         /* Matches form field width */
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.leaderboard h2 {
+    color: #8FBC8F;
+    margin: 0 0 12px 0;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border-bottom: 1px dashed #556B2F;
+    padding-bottom: 10px;
+}
+
+.leaderboard ol {
+    margin: 0;
+    padding-left: 20px;
+    color: #EAEAEA;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.95rem;
+    text-align: left;
+}
+
+.leaderboard li {
+    margin-bottom: 7px;
+    line-height: 1.4;
+}
+
+.leaderboard li:last-child {
+    margin-bottom: 0;
+}
+
+/* =============================================
+   STATUS BAR
+   ============================================= */
+.status-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #EAEAEA;
+    background-color: #1A1A1A;
+    padding: 7px 18px;
+    border-radius: 6px;
+    border: 2px solid #556B2F;
+    margin: 0 auto 14px auto;
+    width: fit-content;
+    max-width: 98%;
+    font-family: 'Courier New', Courier, monospace;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.status-display span {
+    color: #6DB96D;
+    font-weight: 700;
+}
+
+@media (max-width: 768px) {
+    .status-display {
+        font-size: 11px;
+        padding: 5px 10px;
+        gap: 4px 8px;
+    }
+}
+
+/* =============================================
+   INSTRUCTIONS
+   ============================================= */
+.instructions {
+    margin-bottom: 0;
+    margin-top: 10px;
+    color: #A8A8A8;
+    font-size: 0.82em;
+    line-height: 1.6;
+}
+
+/* =============================================
+   END SCREENS (Win & Lose)
+   ============================================= */
+.end-screen {
+    position: fixed;             /* Fixed to viewport — correct on all screen sizes */
+    inset: 0;
+    background-color: rgba(8, 10, 6, 0.88);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+    backdrop-filter: blur(8px);
+}
+
+.end-screen-content {
+    background-color: #1C1E18;
+    padding: 36px 40px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.65);
+    border: 2px solid #556B2F;
+    width: min(380px, 90vw);
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+    from { transform: scale(0.6); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+}
+
+.end-icon {
+    font-size: 3.5rem;
+    margin-bottom: 12px;
+    line-height: 1;
+}
+
+.end-title {
+    font-size: 1.7rem;
+    font-weight: 800;
+    margin: 0 0 8px 0;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.win-title {
+    color: #6DB96D;
+    text-shadow: 2px 2px 0 #000;
+}
+
+.lose-title {
+    color: #A0522D;
+    text-shadow: 2px 2px 0 #000;
+}
+
+.end-subtitle {
+    font-size: 1rem;
+    color: #A8A8A8;
+    margin: 12px 0 4px 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.end-time {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #6DB96D;
+    font-family: 'Courier New', Courier, monospace;
+    margin: 0 0 20px 0;
+}
+
+/* End screen buttons */
+.btn-end {
+    padding: 11px 28px;
+    font-size: 1rem;
+    font-family: 'Outfit', 'Segoe UI', sans-serif;
+    font-weight: 700;
+    color: #F5F5F5;
+    background: #2E7D32;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+    width: 100%;
+    max-width: 280px;
+}
+
+.btn-end:hover {
+    background: #3A9E40;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.5);
+}
+
+.btn-end:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.btn-menu {
+    background: #3A3D30;             /* Muted dark for secondary action */
+    color: #C8C8C8;
+}
+
+.btn-menu:hover {
+    background: #4A4E3A;
+    color: #F0F0F0;
+}
+
+.end-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    margin-top: 18px;
+}
+
+/* =============================================
+   VIRTUAL MOBILE CONTROLS
+   ============================================= */
+.mobile-controls {
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 18px;
+    padding: 0 10px;
+    width: 100%;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.d-pad {
+    position: relative;
+    width: 120px;
+    height: 120px;
+}
+
+.d-btn {
+    position: absolute;
+    width: 45px;
+    height: 45px;
+    background-color: rgba(46, 125, 50, 0.15);
+    border: 2px solid rgba(85, 107, 47, 0.6);
+    border-radius: 50%;
+    color: #EAEAEA;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color 0.1s, transform 0.1s;
+}
+
+.d-btn:active,
+.d-btn.active {
+    background-color: rgba(46, 125, 50, 0.5);
+    transform: scale(0.9);
+}
+
+.d-pad .up    { top: 0;     left: 37.5px; }
+.d-pad .down  { bottom: 0;  left: 37.5px; }
+.d-pad .left  { top: 37.5px; left: 0;    }
+.d-pad .right { top: 37.5px; right: 0;   }
+
+.action-pad {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.action-btn {
+    width: 80px;
+    height: 80px;
+    background-color: rgba(46, 125, 50, 0.22);
+    border: 3px solid #556B2F;
+    border-radius: 50%;
+    color: #EAEAEA;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    transition: all 0.1s;
+}
+
+.action-btn:active,
+.action-btn.active {
+    background-color: rgba(46, 125, 50, 0.65);
+    color: #F5F5F5;
+    transform: scale(0.95);
+}
+
+/* =============================================
+   RESPONSIVE MEDIA QUERIES
+   ============================================= */
+@media (max-width: 768px) {
+    .mobile-controls {
+        display: flex;
+    }
+
+    .instructions {
+        display: none;
+    }
+
+    /* Welcome screen gap tighter on small screens */
+    .welcome-screen {
+        gap: 14px;
+        padding: 20px 14px;
+    }
+
+    .logo-placeholder {
+        max-height: 120px;
+        max-width: 260px;
+    }
+
+    .end-screen-content {
+        padding: 28px 24px;
+    }
+
+    .end-title {
+        font-size: 1.4rem;
+    }
+
+    .end-time {
+        font-size: 2.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .end-screen-content {
+        padding: 22px 18px;
+    }
+
+    .end-title {
+        font-size: 1.2rem;
+    }
+}
