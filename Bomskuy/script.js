@@ -686,20 +686,30 @@ const btnBomb = document.getElementById('btn-bomb');
 
 function addTouchControl(element, action) {
     if (!element) return;
-    
+
     const triggerAction = (e) => {
-        if(e.cancelable) e.preventDefault(); // Mencegah zoom/scroll
-        
-        // Visual feedback aktif (jika perlu)
+        if (e.cancelable) e.preventDefault(); // Mencegah zoom/scroll saat tap
+
+        // Visual feedback aktif
         element.classList.add('active');
-        setTimeout(() => element.classList.remove('active'), 100);
-        
+        setTimeout(() => element.classList.remove('active'), 120);
+
         action();
     };
-    
-    // Mendukung baik sentuhan layar HP maupun klik mouse di PC untuk pengetesan
+
+    // touchstart: respons langsung tanpa delay 300ms
     element.addEventListener('touchstart', triggerAction, { passive: false });
+
+    // mousedown: agar bisa ditest di PC
     element.addEventListener('mousedown', triggerAction);
+
+    // Cegah context menu saat long-press di HP
+    element.addEventListener('contextmenu', (e) => e.preventDefault());
+
+    // Cegah scroll saat jari bergerak di atas tombol
+    element.addEventListener('touchmove', (e) => {
+        if (e.cancelable) e.preventDefault();
+    }, { passive: false });
 }
 
 // Pasang fungsi pergerakan ke masing-masing tombol
