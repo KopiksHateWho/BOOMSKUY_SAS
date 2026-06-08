@@ -24,7 +24,7 @@ const nameDisplay = document.getElementById('player-name-display');
 const healthDisplayUI = document.getElementById('health-display');
 const timeDisplayUI = document.getElementById('time-display');
 const scoreDisplayUI = document.getElementById('score-display');
-const selectLevelElement = document.getElementById('select-level');
+const selectLevelElement = null; // Digantikan oleh radio button — lihat getSelectedLevel()
 const levelDisplayUI = document.getElementById('level-display');
 const winScreen = document.getElementById('win-screen');
 const loseScreen = document.getElementById('lose-screen');
@@ -93,6 +93,15 @@ let timerInterval = null;
 let enemyInterval = null;
 let elapsedTime = 0;
 let playerName = "";
+
+/**
+ * Membaca level yang dipilih dari grup radio button "selected-level".
+ * Fallback ke 1 jika belum ada yang dipilih.
+ */
+function getSelectedLevel() {
+    const checked = document.querySelector('input[name="selected-level"]:checked');
+    return checked ? parseInt(checked.value, 10) : 1;
+}
 
 /**
  * Fungsi utilitas
@@ -638,7 +647,7 @@ btnStart.addEventListener('click', () => {
     }
     
     playerName = inputVal;
-    selectedLevel = parseInt(selectLevelElement.value) || 1;
+    selectedLevel = getSelectedLevel();
     welcomeScreen.style.display = 'none';
     
     playRandomBGM();
