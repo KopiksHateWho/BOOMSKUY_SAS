@@ -286,11 +286,9 @@ h1 {
 }
 
 /* =============================================
-   FORM ELEMENTS (Input & Select)
-   Shared base style via common properties
+   FORM ELEMENTS (Input)
    ============================================= */
-.input-name,
-.select-level {
+.input-name {
     padding: 11px 18px;
     font-size: 1.05rem;
     font-family: 'Outfit', 'Segoe UI', sans-serif;
@@ -300,33 +298,132 @@ h1 {
     background-color: #1E201A;
     color: #EAEAEA;
     text-align: center;
-    width: min(300px, 88vw);         /* Responsive width without overflow */
+    width: min(300px, 88vw);
     outline: none;
-    cursor: pointer;
-    transition: border-color 0.25s, background-color 0.25s;
-    /* Remove individual margin-bottom; parent gap handles spacing */
-}
-
-.input-name {
     cursor: text;
-    text-align: center;
+    transition: border-color 0.25s, background-color 0.25s;
 }
 
-.select-level {
-    text-align-last: center;
-    appearance: none;
-    -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238FBC8F' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 14px center;
-    padding-right: 36px;
-}
-
-.input-name:focus,
-.select-level:focus {
+.input-name:focus {
     border-color: #6B8E23;
     background-color: #222618;
     color: #F5F5F5;
+}
+
+/* =============================================
+   LEVEL SELECTOR — Vintage Nature Theme
+   Tiga kartu radio berbentuk kotak
+   ============================================= */
+.level-selector {
+    width: min(320px, 88vw);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.level-selector__label {
+    margin: 0;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #8FBC8F;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-align: center;
+}
+
+/* Baris tiga kartu sejajar */
+.level-options {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    width: 100%;
+}
+
+/* === Kartu Level (label pembungkus) === */
+.level-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 6px;
+    border: 2px solid #3B4A22;
+    border-radius: 8px;
+    background-color: #1A1D14;
+    cursor: pointer;
+    transition: border-color 0.22s ease, background-color 0.22s ease;
+    /* Sembunyikan input radio asli */
+    position: relative;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Sembunyikan input radio secara visual, tetap accessible */
+.level-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+/* Hover — perubahan warna latar yang kalem, tanpa glow/neon */
+.level-card:hover {
+    border-color: #6B8E23;
+    background-color: #212518;
+}
+
+/* State terpilih — warna lebih terang tapi tetap earthy */
+.level-card:has(input:checked) {
+    border-color: #8FBC8F;
+    background-color: #252D1A;
+}
+
+/* Badge "Lv N" */
+.level-card__badge {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #6DB96D;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background-color: #1A2212;
+    border: 1px solid #3B5A20;
+    border-radius: 4px;
+    padding: 1px 6px;
+    transition: color 0.22s ease, background-color 0.22s ease;
+}
+
+.level-card:has(input:checked) .level-card__badge {
+    color: #A8D8A8;
+    background-color: #223018;
+    border-color: #5A8A40;
+}
+
+/* Nama level: "Easy / Normal / Hard" */
+.level-card__name {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #C8D4B8;
+    transition: color 0.22s ease;
+}
+
+.level-card:has(input:checked) .level-card__name {
+    color: #E8F0DC;
+}
+
+/* Detail: durasi & bom */
+.level-card__detail {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: #7A8A68;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+    line-height: 1.3;
+    transition: color 0.22s ease;
+}
+
+.level-card:has(input:checked) .level-card__detail {
+    color: #9AAE82;
 }
 
 /* START button */
