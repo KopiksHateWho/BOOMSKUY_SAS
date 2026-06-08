@@ -13,11 +13,32 @@
         <div id="welcome-screen" class="welcome-screen">
             <img src="./Assets/Bomskuy.png" alt="Bomskuy Logo" class="logo-placeholder">
             <input type="text" id="input-name" class="input-name" placeholder="Masukkan Nama Anda" autocomplete="off">
-            <select id="select-level" class="select-level">
-                <option value="1">Level 1 (Easy)</option>
-                <option value="2">Level 2 (Normal)</option>
-                <option value="3">Level 3 (Hard)</option>
-            </select>
+            <div class="level-selector" role="group" aria-label="Pilih Level">
+                <p class="level-selector__label">Pilih Level</p>
+                <div class="level-options">
+                    <!-- Level 1 -->
+                    <label class="level-card" for="level-1">
+                        <input type="radio" id="level-1" name="selected-level" value="1" checked>
+                        <span class="level-card__badge">Lv 1</span>
+                        <span class="level-card__name">Easy</span>
+                        <span class="level-card__detail">120s · No Bomb</span>
+                    </label>
+                    <!-- Level 2 -->
+                    <label class="level-card" for="level-2">
+                        <input type="radio" id="level-2" name="selected-level" value="2">
+                        <span class="level-card__badge">Lv 2</span>
+                        <span class="level-card__name">Normal</span>
+                        <span class="level-card__detail">90s · With Bomb</span>
+                    </label>
+                    <!-- Level 3 -->
+                    <label class="level-card" for="level-3">
+                        <input type="radio" id="level-3" name="selected-level" value="3">
+                        <span class="level-card__badge">Lv 3</span>
+                        <span class="level-card__name">Hard</span>
+                        <span class="level-card__detail">60s · With Bomb</span>
+                    </label>
+                </div>
+            </div>
             <button id="btn-start" class="btn-start">Mulai Bermain</button>
             
             <div class="leaderboard">
